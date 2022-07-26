@@ -25,6 +25,7 @@ const showRamen = (ramen) => {
     ramenDetail.setAttribute('ramen-id', ramenId); 
     deleteBtn.setAttribute('ramen-id', ramenId);
     editForm.setAttribute('ramen-id', ramenId);
+    //update details div with ramen info
     restaurant.innerText = ramen.restaurant;
     itemName.innerText = ramen.name;
     rating.innerText = ramen.rating;
@@ -47,18 +48,22 @@ const addRamen = (ramen) => {
 //deletes ramen from database and removes from ramen menu
 //e parameter takes on click event object
 const deleteRamen = (e) => {
+    let rmId = e.target.getAttribute('ramen-id') //get current ramen id from delete button
+    //get list of all images in menu
     let menuList = document.querySelectorAll('#ramen-menu img')
-    let rmId = e.target.getAttribute('ramen-id')
-    menuList.forEach((el, i) => {
-        if (el.getAttribute('ramen-id') === rmId) {
-            el.remove();
-        }
-    })
+    //update database
     fetch(`${url}/${rmId}`, {
         method: 'DELETE'
     })
     .then(res => res.json())
-    .then(data => console.log(data))
+    .then(data => { //remove from DOM here so we know it was deleted from server
+            //iterate through menu images until i find matching ids
+            menuList.forEach((el, i) => {
+            if (el.getAttribute('ramen-id') === rmId) {
+                el.remove(); //remove image node from menuList
+            }
+        })
+    })
     .catch(err => console.log(err));
 }
 
@@ -67,11 +72,10 @@ const deleteRamen = (e) => {
 const editRamen = (e) => {
     e.preventDefault();
     let newRating = e.target.rating.value;
-    console.log(`new rating is ${rating}`)
     let newComment = e.target['new-comment'].value;
-    let ramenId = e.target.getAttribute('ramen-id');
-    rating.innerText = newRating;
-    comment.innerText = newComment;
+    let ramenId = e.target.getAttribute('ramen-id'); //get ramen id for fetch statement
+    
+    //with PATCH we don't need to include all key/value pairs
     let body = {
         rating: newRating,
         comment: newComment
@@ -83,6 +87,12 @@ const editRamen = (e) => {
             'Content-Type': 'application/json'
         }
     })
+    .then(res => res.json())
+    .then(data => { //update DOM here to get exactly what was update in server
+        rating.innerText = data.rating;
+        comment.innerText = data.comment;
+    })
+    .catch(err => console.log(err));
     e.target.reset();
 }
 
@@ -90,6 +100,7 @@ const editRamen = (e) => {
 //e parameter takes form submit event object
 const newRamen = (e) => {
     e.preventDefault();
+    //build new ramen object from form input
     let newRamen = {
         name: e.target.name.value,
         restaurant: e.target.restaurant.value,
@@ -97,8 +108,6 @@ const newRamen = (e) => {
         rating: e.target.rating.value,
         comment: e.target['new-comment'].value
     }
-
-
     fetch(url, {
         method: 'POST',
         body: JSON.stringify(newRamen),
@@ -108,11 +117,10 @@ const newRamen = (e) => {
     })
     .then(res => res.json())
     .then(data => {
-        addRamen(data);
-        showRamen(data);
+        addRamen(data); //add to ramen menu
+        showRamen(data); //show new ramen in details div immediately
     })
     .catch(err => console.log(err))
-
     e.target.reset();
 }
 
