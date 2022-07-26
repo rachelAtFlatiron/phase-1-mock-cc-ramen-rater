@@ -5,8 +5,8 @@
       "name": "Shoyu Ramen",
       "restaurant": "Nonono",
       "image": "./assets/ramen/shoyu.jpg",
-      "rating": 7,
-      "comment": "Delish. Can't go wrong with a classic!"
+      "rating": "6",
+      "comment": "Delish. Can go wrong."
     },
     {
       "id": 2,
@@ -39,6 +39,14 @@
       "image": "./assets/ramen/kojiro.jpg",
       "rating": 6,
       "comment": "Perfect for a cold night."
+    },
+    {
+      "name": "Chicken Paitan ",
+      "restaurant": "Toto",
+      "image": "https://cdn.vox-cdn.com/thumbor/K4a_f0u5rMJ3v5alGc-Bg24f1HI=/0x0:1824x1368/1770x1328/filters:focal(767x539:1057x829):format(webp):no_upscale()/cdn.vox-cdn.com/uploads/chorus_image/image/67464838/sietseramenTotto.0.0.0.0.jpg",
+      "rating": "5",
+      "comment": "avacado..?",
+      "id": 9
     }
   ]
 }
