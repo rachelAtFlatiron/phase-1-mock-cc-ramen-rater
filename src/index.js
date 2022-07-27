@@ -23,7 +23,6 @@ const url = 'http://localhost:3000/ramens'
 //show ramen in details div
 //ramen parameter takes an object representing a ramen
 const showRamen = (ramen) => {
-
     //including new attribute ramen-id for editing and deleting
     let ramenId = ramen.id;
     ramenDetail.setAttribute('ramen-id', ramenId); 
