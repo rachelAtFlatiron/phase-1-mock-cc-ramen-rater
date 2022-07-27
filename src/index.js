@@ -3,6 +3,7 @@
 
 //row of images div
 const menu = document.querySelector('#ramen-menu')
+
 //details div
 const ramenDetail = document.querySelector('#ramen-detail')
 const image = document.querySelector("#ramen-detail .detail-image")
@@ -10,21 +11,25 @@ const restaurant = document.querySelector("#ramen-detail .restaurant")
 const itemName = document.querySelector("#ramen-detail .name")
 const rating = document.querySelector('#rating-display')
 const comment = document.querySelector('#comment-display')
+
 //forms and delete button
 const newForm = document.querySelector('#new-ramen')
 const editForm = document.querySelector('#edit-ramen')
 const deleteBtn = document.querySelector('#delete-ramen')
+
 //url for localhost
 const url = 'http://localhost:3000/ramens'
 
 //show ramen in details div
 //ramen parameter takes an object representing a ramen
 const showRamen = (ramen) => {
+
     //including new attribute ramen-id for editing and deleting
     let ramenId = ramen.id;
     ramenDetail.setAttribute('ramen-id', ramenId); 
     deleteBtn.setAttribute('ramen-id', ramenId);
     editForm.setAttribute('ramen-id', ramenId);
+
     //update details div with ramen info
     restaurant.innerText = ramen.restaurant;
     itemName.innerText = ramen.name;
@@ -36,6 +41,7 @@ const showRamen = (ramen) => {
 //add ramen to menu row of images
 //ramen parameter takes an object representing a ramen
 const addRamen = (ramen) => {
+
     let menuImg = document.createElement('img');
     menuImg.src = ramen.image;
     menuImg.setAttribute('ramen-id', ramen.id); //include ramen id for editing and deleting
@@ -48,15 +54,17 @@ const addRamen = (ramen) => {
 //deletes ramen from database and removes from ramen menu
 //e parameter takes on click event object
 const deleteRamen = (e) => {
+
     let rmId = e.target.getAttribute('ramen-id') //get current ramen id from delete button
-    //get list of all images in menu
-    let menuList = document.querySelectorAll('#ramen-menu img')
+    let menuList = document.querySelectorAll('#ramen-menu img') //get list of all images in menu
+
     //update database
     fetch(`${url}/${rmId}`, {
         method: 'DELETE'
     })
     .then(res => res.json())
-    .then(data => { //remove from DOM here so we know it was deleted from server
+    .then(() => { 
+            //remove from DOM here so we know it was deleted from server
             //iterate through menu images until i find matching ids
             menuList.forEach((el, i) => {
             if (el.getAttribute('ramen-id') === rmId) {
@@ -70,6 +78,7 @@ const deleteRamen = (e) => {
 //edit ramen from database using PATCH and updates in details div
 //e parameter takes form submit event object
 const editRamen = (e) => {
+
     e.preventDefault();
     let newRating = e.target.rating.value;
     let newComment = e.target['new-comment'].value;
@@ -80,6 +89,8 @@ const editRamen = (e) => {
         rating: newRating,
         comment: newComment
     }
+
+    //patch
     fetch(`${url}/${ramenId}`, {
         method: 'PATCH',
         body: JSON.stringify(body),
@@ -93,12 +104,15 @@ const editRamen = (e) => {
         comment.innerText = data.comment;
     })
     .catch(err => console.log(err));
+
+    //reset form
     e.target.reset();
 }
 
 //adds new ramen to database and updates ramen menu, and shows in details div
 //e parameter takes form submit event object
 const newRamen = (e) => {
+
     e.preventDefault();
     //build new ramen object from form input
     let newRamen = {
@@ -108,6 +122,8 @@ const newRamen = (e) => {
         rating: e.target.rating.value,
         comment: e.target['new-comment'].value
     }
+
+    //post
     fetch(url, {
         method: 'POST',
         body: JSON.stringify(newRamen),
@@ -121,9 +137,12 @@ const newRamen = (e) => {
         showRamen(data); //show new ramen in details div immediately
     })
     .catch(err => console.log(err))
+
+    //reset form
     e.target.reset();
 }
 
+//add event listeners using methods above
 deleteBtn.addEventListener('click', deleteRamen);
 editForm.addEventListener('submit', editRamen);
 newForm.addEventListener('submit', newRamen);
