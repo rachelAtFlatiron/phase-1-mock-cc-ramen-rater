@@ -20,6 +20,20 @@ const deleteBtn = document.querySelector('#delete-ramen')
 //url for localhost
 const url = 'http://localhost:3000/ramens'
 
+//add ramen to menu row of images
+//ramen parameter takes an object representing a ramen
+const addRamen = (ramen) => {
+
+    let menuImg = document.createElement('img');
+    menuImg.src = ramen.image;
+    menuImg.setAttribute('ramen-id', ramen.id); //include ramen id for editing and deleting
+    menu.append(menuImg);
+    menuImg.addEventListener('click', (e) => { //on menu image click show ramen in details div
+        showRamen(ramen)
+    })
+}
+
+
 //show ramen in details div
 //ramen parameter takes an object representing a ramen
 const showRamen = (ramen) => {
@@ -37,24 +51,14 @@ const showRamen = (ramen) => {
     image.src = ramen.image;
 }
 
-//add ramen to menu row of images
-//ramen parameter takes an object representing a ramen
-const addRamen = (ramen) => {
 
-    let menuImg = document.createElement('img');
-    menuImg.src = ramen.image;
-    menuImg.setAttribute('ramen-id', ramen.id); //include ramen id for editing and deleting
-    menu.append(menuImg);
-    menuImg.addEventListener('click', (e) => { //on menu image click show ramen in details div
-        showRamen(ramen)
-    })
-}
 
 //deletes ramen from database and removes from ramen menu
 //e parameter takes on click event object
 const deleteRamen = (e) => {
-
+    //e.target is the delete button
     let rmId = e.target.getAttribute('ramen-id') //get current ramen id from delete button
+    //contains all menu images
     let menuList = document.querySelectorAll('#ramen-menu img') //get list of all images in menu
 
     //update database
