@@ -1,5 +1,10 @@
-// write your code here
-//setAttribute is attached to an element, createAttribute is not yet attached to an element
+/*
+*
+*
+SETTING CONSTANTS
+*
+*
+*/
 
 //row of images div
 const menu = document.querySelector('#ramen-menu')
@@ -18,10 +23,24 @@ const newForm = document.querySelector('#new-ramen')
 //url for localhost
 const url = 'http://localhost:3000/ramens'
 
-//add ramen to menu row of images
-//ramen parameter takes an object representing a ramen
-const addRamen = (ramen) => {
 
+/*
+*
+*
+FUNCTION DEFINITIONS
+*
+*
+*/
+
+//get all ramen from database
+const getRamen = async (ramen) => {
+    let res = await fetch(url);
+    let data = await res.json();
+    addRamen(data);
+}
+
+//add ramen takes in all ramen and creates buttons in menu bar
+const addRamen = (ramen) => {
     let menuImg = document.createElement('img');
     menuImg.src = ramen.image;
     menuImg.setAttribute('ramen-id', ramen.id); //include ramen id for editing and deleting
@@ -31,9 +50,7 @@ const addRamen = (ramen) => {
     })
 }
 
-
-//show ramen in details div
-//ramen parameter takes an object representing a ramen
+//takes in one ramen and shows details in details div
 const showRamen = (ramen) => {
     //update details div with ramen info
     restaurant.innerText = ramen.restaurant;
@@ -46,7 +63,6 @@ const showRamen = (ramen) => {
 //adds new ramen to database and updates ramen menu, and shows in details div
 //e parameter takes form submit event object
 const newRamen = (e) => {
-
     e.preventDefault();
     //build new ramen object from form input
     let newRamen = {
@@ -64,19 +80,14 @@ const newRamen = (e) => {
     e.target.reset();
 }
 
+/*
+*
+*
+CODE TO RUN ON PAGE LOAD
+*
+*
+*/
+
 //add event listeners using methods above
 newForm.addEventListener('submit', newRamen);
-
-//fetch data, return first ramen, and showRamen
-fetch(url)
-    .then(res => res.json())
-    .then(data => {
-        data.forEach((el, i) => {
-            addRamen(el);
-        })
-        return data[0] //return first ramen to next '.then'
-    })
-    .then(firstRamen => showRamen(firstRamen)) 
-    .catch(err => console.log(err))
-
-//NOTE: DOMContentLoaded is taken care of with 'defer' keyword in script tag of index.html
+getRamen();
