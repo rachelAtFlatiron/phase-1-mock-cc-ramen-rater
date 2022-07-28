@@ -33,10 +33,12 @@ FUNCTION DEFINITIONS
 */
 
 //get all ramen from database
-const getRamen = async (ramen) => {
+const getRamens = async () => {
     let res = await fetch(url);
     let data = await res.json();
-    addRamen(data);
+    data.forEach((el) => {
+        addRamen(el)
+    })
 }
 
 //add ramen takes in all ramen and creates buttons in menu bar
@@ -90,4 +92,4 @@ CODE TO RUN ON PAGE LOAD
 
 //add event listeners using methods above
 newForm.addEventListener('submit', newRamen);
-getRamen();
+getRamens();
