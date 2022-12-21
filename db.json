@@ -1,14 +1,6 @@
 {
   "ramens": [
     {
-      "id": 1,
-      "name": "Shoyu Ramen",
-      "restaurant": "Nonono",
-      "image": "./assets/ramen/shoyu.jpg",
-      "rating": "7",
-      "comment": "Delish. Can't go wrong."
-    },
-    {
       "id": 2,
       "name": "Naruto Ramen",
       "restaurant": "Naruto",
@@ -17,20 +9,12 @@
       "comment": "My absolute fave!"
     },
     {
-      "id": 3,
-      "name": "Nirvana Shiromaru",
-      "restaurant": "Ippudo",
-      "image": "./assets/ramen/nirvana.jpg",
-      "rating": "7",
-      "comment": "Do buy the hype."
-    },
-    {
       "id": 4,
       "name": "Gyukotsu Ramen",
       "restaurant": "Za-Ya Ramen",
       "image": "./assets/ramen/gyukotsu.jpg",
-      "rating": 8,
-      "comment": "Good to the last drop."
+      "rating": "3",
+      "comment": "33333"
     },
     {
       "id": 5,
@@ -47,14 +31,6 @@
       "rating": "5",
       "comment": "avacado..?",
       "id": 9
-    },
-    {
-      "name": "sdf",
-      "restaurant": "sdf",
-      "image": "sdf",
-      "rating": "3",
-      "comment": "sdf",
-      "id": 10
     }
   ]
 }
