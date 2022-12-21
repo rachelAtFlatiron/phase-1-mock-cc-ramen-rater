@@ -1,3 +1,10 @@
+/*
+TODO: 
+1. change the ramen menu icon's to have id's stored using setData
+2. only have side effects run if res.ok
+*/
+
+//~~~~~~~~~CONSTANTS~~~~~~~~~~~~
 const url = "http://localhost:3000/ramens"
 const ramenMenu = document.querySelector('#ramen-menu')
 const ramenImage = document.querySelector('#ramen-detail .detail-image')
@@ -8,9 +15,9 @@ const ramenComment = document.querySelector('#comment-display')
 const newRamenForm = document.querySelector('#new-ramen')
 const deleteBtn = document.querySelector('#delete-ramen')
 const editRamenForm = document.querySelector('#edit-ramen')
-let globalRamen = -1
+let globalRamen = -1 //an index that doesn't exist in the database
 
-//DELIVERABLE 1: get all data from server
+//~~~~~~~DELIVERABLE 1p1: get all data from server
 const getAllData = () => {
     fetch(url)
     .then(res => res.json())
@@ -19,30 +26,29 @@ const getAllData = () => {
         data.forEach(curRamen => {
             addToMenu(curRamen)
         })
-        //AD 1: show first ramen on page load
+        //~~~~~~~~~AD 1: show first ramen on page load
         showDetails(data[0])
         globalRamen = data[0].id
     })
     //console.log(data) will not work - out of scope - in synchronous area
 }
 
-//DELIVERABLE 2: add ramen image to ramen menu
+//~~~~~~~~DELIVERABLE 1p2: add ramen image to ramen menu
 const addToMenu = (ramen) => {
     let img = document.createElement('img')
     img.src = ramen.image 
-    img.id = `id${ramen.id}`
-    //1. on ramen menu click 
+    img.id = `id${ramen.id}`  //TODO: better to use setData
+    //on ramen menu click 
     img.addEventListener('click', () => {
         showDetails(ramen)
-        globalRamen = ramen.id
-        console.log("cur ramen id", globalRamen)
+        globalRamen = ramen.id //UPDATE GLOBAL RAMEN ID
     })
     //add image element (with event listener) to menu bar up top
     ramenMenu.append(img)
 }
 
+//~~~~~~~~~DELIVERABLE 2: get ramen details and populate appropriate elements
 const showDetails = (ramen) => {
-    //get ramen details and populate appropriate elements
     ramenRating.innerText = ramen.rating 
     ramenRestaurant.innerText = ramen.restaurant
     ramenName.innerText = ramen.name
@@ -50,10 +56,10 @@ const showDetails = (ramen) => {
     ramenComment.innerText = ramen.comment
 }
 
-//DELIVERABLE 3: on new ramen form submit
+//~~~~~~~~~~DELIVERABLE 3: on new ramen form submit
 const addNewRamen = (e) => {
     e.preventDefault()
-    //2. get user input data from form
+    //get user input data from form
     let body = {
         name: e.target.name.value,
         restaurant: e.target.restaurant.value,
@@ -61,31 +67,66 @@ const addNewRamen = (e) => {
         comment: e.target['new-comment'].value,
         image: e.target.image.value
     }
-    addToMenu(body)
+
+    //~~~~~~~~~~POST request
+    fetch(`${url}`, {
+        method: 'POST',
+        headers: {
+            'content-type': 'application/json'
+        },
+        body: JSON.stringify(body)
+    })
+    .then(res => res.json())
+    .then(data => { //use res.ok for side effect
+        addToMenu(body)
+    })
 }
 
-//on edit form submit
+//~~~~~~~~~AD 2: submit edit form to update details
 const editRamen = (e) => {
     e.preventDefault()
     //get user information 
     let newRating = e.target.rating.value 
     let newComment = e.target['new-comment'].value
-    //update the comment and rating divs with said information
-    ramenComment.innerText = newComment
-    ramenRating.innerText = newRating
+    
+    //~~~~~~~~~~~~~PATCH request
+    fetch(`${url}/${globalRamen}`, {
+        method: 'PATCH',
+        headers: {
+            'content-type': 'application/json'
+        },
+        body: JSON.stringify({ 
+            rating: newRating,
+            comment: newComment
+        })
+    })
+    .then(res => res.json()) 
+    .then(data => { //use if res.ok for side effect
+        //update the comment and rating divs with said information
+        ramenComment.innerText = data.comment
+        ramenRating.innerText = data.rating
+    })
 }
 
+//~~~~~~~~~~~~~~~AD 3: delete button
 const deleteRamen = () => {
-    //get current ramen id : globalRamen
-    //find ramen icon in menu with ramen id
-    document.querySelector(`#ramen-menu #id${globalRamen}`).remove()
-    //clear ramen details divs
-    showDetails({ 
-        image: '',
-        rating: 0,
-        restaurant: '',
-        name: '',
-        comment: ''
+    //delete ramen icon
+    document.querySelector(`#ramen-menu #id${globalRamen}`).remove() 
+
+    //~~~~~~~~~~~~DELETE request
+    fetch(`${url}/${globalRamen}`, {
+        method: 'DELETE'
+    })
+    .then(res => res.json())
+    .then(data => { //use if res.ok for side effect
+        //clear ramen details divs
+        showDetails({ 
+            image: '',
+            rating: 0,
+            restaurant: '',
+            name: '',
+            comment: ''
+        })
     })
 }
 
@@ -98,7 +139,6 @@ document.addEventListener('DOMContentLoaded', () => {
     editRamenForm.addEventListener('submit', (e) => {
         editRamen(e)
     })
-
     deleteBtn.addEventListener('click', () => {
         deleteRamen()
     })
