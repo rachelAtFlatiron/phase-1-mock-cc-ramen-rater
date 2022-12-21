@@ -1,103 +1,72 @@
-//see all ramen image in ramen-menu
-//get #ramen-menu
-const ramenMenu = document.querySelector('#ramen-menu');
-const ramenDetails = document.querySelector('#ramen-detail');
-const ramenImage = document.querySelector('.detail-image');
-const ramenName = document.querySelector('#ramen-detail .name')
+const url = "http://localhost:3000/ramens"
+const ramenMenu = document.querySelector('#ramen-menu')
+const ramenImage = document.querySelector('#ramen-detail .detail-image')
+const ramenName = document.querySelector('#ramen-detail .name ')
 const ramenRestaurant = document.querySelector('#ramen-detail .restaurant')
-const ramenRating = document.querySelector('#rating-display');
-const ramenComment = document.querySelector('#comment-display');
-const ramenForm = document.querySelector('#new-ramen');
-const editForm = document.querySelector('#edit-ramen');
-//const deleteBtn = document.querySelector('#delete-ramen');
-const url = 'http://localhost:3000/ramens';
+const ramenRating = document.querySelector('#rating-display')
+const ramenComment = document.querySelector('#comment-display')
+const newRamenForm = document.querySelector('#new-ramen')
+const deleteBtn = document.querySelector('#delete-ramen')
+const editRamenForm = document.querySelector('#edit-ramen')
 
-//id of current displayed ramen
-let activeRamen = 1;
-
-//add ramen image to menu, create on click event
-const addRamen = function(ramen){
-    //create an image tag
-    let image = document.createElement('img');
-    //create new attribute to pass down ramen id info
-    image.setAttribute('ramen-id', ramen.id);
-    //add image to src
-    image.src = ramen.image;
-    //append image to #ramen-div
-    ramenMenu.append(image);
-    //on ramen-menu click show ramen in details
-    image.addEventListener('click', (e) => {
-        showRamen(ramen);
-    })
-    //create delete button
-    let deleteBtn = document.createElement('button');
-    deleteBtn.innerText = 'delete';
-    //on click remove button AND menu image
-    deleteBtn.addEventListener('click', function(){
-        image.remove();
-        deleteBtn.remove();
-    })
-    //add delete button to ramen div
-    ramenMenu.append(deleteBtn);
-}
-
-//fetching one single ramen using id
-const getDataById = function(ramenId){
-    return fetch(`${url}/${ramenId}`)
+//DELIVERABLE 1: get all data from server
+const getAllData = () => {
+    fetch(url)
     .then(res => res.json())
+    .then(data => {
+        //3. iterate over data
+        data.forEach(curRamen => {
+            addToMenu(curRamen)
+        })
+    })
+    //console.log(data) will not work - out of scope - in synchronous area
 }
 
-//populates display div with information
-const showRamen = function(ramen){
-    editForm.setAttribute('ramen-id', ramen.id);
-    ramenImage.src = ramen.image;
-    ramenName.innerText = ramen.name;
-    ramenRestaurant.innerText = ramen.restaurant;
-    ramenRating.innerText = ramen.rating;
-    ramenComment.innerText = ramen.comment;
+//DELIVERABLE 2: add ramen image to ramen menu
+const addToMenu = (ramen) => {
+    let img = document.createElement('img')
+    img.src = ramen.image 
+    //1. on ramen menu click 
+    img.addEventListener('click', () => {
+        //2. get ramen details and populate appropriate elements
+        ramenRating.innerText = ramen.rating 
+        ramenRestaurant.innerText = ramen.restaurant
+        ramenName.innerText = ramen.name
+        ramenImage.src = ramen.image 
+        ramenComment.innerText = ramen.comment
+    })
+    //add image element (with event listener) to menu bar up top
+    ramenMenu.append(img)
+    
 }
 
-//fetch GET all ramen
-fetch(url)
-.then(res => {
-    return res.json()
-}) 
-.then(ramens => {
-    //iterate through all ramen
-    ramens.forEach((ramen, index) => {
-        addRamen(ramen);
-    })    
-    showRamen(ramens[0])
-})
-        
-//submit form create new ramen
-ramenForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    console.log(e.target.name.value);
-    let newRamen = {
+//DELIVERABLE 3: on new ramen form submit
+const addNewRamen = (e) => {
+    e.preventDefault()
+    //2. get user input data from form
+    let body = {
         name: e.target.name.value,
         restaurant: e.target.restaurant.value,
         rating: e.target.rating.value,
         comment: e.target['new-comment'].value,
         image: e.target.image.value
     }
-    addRamen(newRamen);
+    addToMenu(body)
 
-    e.target.reset();
-})
+    //3. make post request
+    //4. if request successful, add new ramen to #ramen-menu div (along with being able to click on it)
+}
 
-//update current ramen
-editForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-
-    //get new values from form
-    let newRating = e.target.rating.value;
-    let comment = e.target['new-comment'].value;
     
-    //update div
-    ramenRating.innerText = newRating;
-    ramenComment.innerText = comment;
 
-    //clear form
-    e.target.reset();
+
+//make function to populate #ramen-menu and show ramen details
+
+
+//code that runs on index.js load down here
+document.addEventListener('DOMContentLoaded', () => {
+    getAllData()
+    newRamenForm.addEventListener('submit', (e) => {
+        addNewRamen(e)
+    })
 })
