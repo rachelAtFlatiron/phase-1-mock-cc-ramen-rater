@@ -24,6 +24,7 @@
     <h2 class="name">Insert Name Here</h2>
     <h3 class="restaurant">Insert Restaurant Here</h3>
   </div>
+  <button id="delete-ramen">Delete</button>
 
   <h3>Rating:</h3>
   <p>
@@ -33,7 +34,7 @@
   <p id='comment-display'>
     Insert comment here
   </p>
-  <button id="delete-ramen">Delete</button>
+  
   <!-- Edit Ramen Form -->
   <form id="edit-ramen">
     <h4>Update the Featured Ramen</h4>
@@ -46,6 +47,21 @@
 
   <!-- New Ramen Form -->
   <form id="new-ramen">
+    <h4>Add New Ramen</h4>
+    <label for="name">Name: </label>
+    <input type="text" name="name" id="new-name" />
+    <label for="restaurant">Restaurant: </label>
+    <input type="text" name="restaurant" id="new-restaurant" />
+    <label for="image">Image: </label>
+    <input type="text" name="image" id="new-image" />
+    <label for="rating">Rating: </label>
+    <input type="number" name="rating" id="new-rating" />
+    <label for="new-comment">Comment: </label>
+    <textarea name="new-comment" id="new-comment"></textarea>
+    <input type="submit" value="Create" />
+  </form>
+
+  <form id="ramen-form">
     <h4>Add New Ramen</h4>
     <label for="name">Name: </label>
     <input type="text" name="name" id="new-name" />
