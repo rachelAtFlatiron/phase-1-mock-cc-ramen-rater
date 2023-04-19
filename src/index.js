@@ -8,7 +8,7 @@ const detailRestaurant = document.querySelector("#ramen-detail .restaurant");
 const ratingDisplay = document.getElementById("rating-display");
 const commentDisplay = document.getElementById("comment-display");
 const ramenForm = document.getElementById("new-ramen");
-
+const deleteBtn = document.getElementById('delete-ramen')
 let currentRamen;
 //CD #1 - see all ramen
 //DRY fetch function
@@ -33,10 +33,12 @@ function getRamen(url) {
  *
  */
 
+//adds a ramen to the menu bar
 function showRamen(ramen) {
   //console.log(ramen)
   //display image for each ramen
   ramenImg = document.createElement("img");
+  ramenImg.setAttribute('id', ramen.id)
   ramenImg.src = ramen.image;
   ramenImg.addEventListener("click", () => {
     showDetails(ramen);
@@ -51,8 +53,10 @@ function showDetails(ramen) {
   detailRestaurant.textContent = ramen.restaurant;
   ratingDisplay.textContent = ramen.rating;
   commentDisplay.textContent = ramen.comment;
-  currentRamen = ramen.id
+  currentRamen = ramen.id //update currentRamen to be id of ramen showing details
 }
+
+
 
 //immediately populates menu with already existing ramens from database on page load
 //getRamen(url)
@@ -78,6 +82,20 @@ ramenForm.addEventListener("submit", (e) => {
   };
   showRamen(new_ramen);
 });
+
+deleteBtn.addEventListener('click', () => {
+    console.log(currentRamen)
+    //remove menu item where currentRamen === id
+    let menuToRemove = document.getElementById(currentRamen.toString())
+    menuToRemove.remove()
+    detailImage.src = ''
+    detailName.textContent = ''
+    detailRestaurant.textContent = ''
+    ratingDisplay.textContent = ''
+    commentDisplay.textContent = ''
+})
+
+//PATCH request: `http://localhost:5500/${currentRamen}`
 
 //request the data
 // function getData() {
